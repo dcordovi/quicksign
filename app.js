@@ -5,9 +5,9 @@
 "use strict";
 
 const CONFIG = {
-  premiumCheckoutUrl: "",
+  premiumCheckoutUrl: "https://cordovil6.gumroad.com/l/quicksign",
   // Gumroad product ID, used for license key verification
-  gumroadProductId: "",
+  gumroadProductId: "a0CvukbVvCvrZF7KybOnmw==",
   premiumPrice: "$9",
 };
 
