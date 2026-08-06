@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://dcordovi.github.io/quicksign/sitemap.xml

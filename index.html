@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>QuickSign — Sign PDF Online Free (No Upload, No Signup)</title>
+  <meta name="description" content="Sign PDF documents in your browser for free. Draw your signature, place it on any page and download a clean signed PDF. No upload — contracts never leave your device." />
+  <meta name="keywords" content="sign pdf, sign pdf online, add signature to pdf, esign pdf, pdf signature, sign document online free" />
+  <link rel="canonical" href="https://dcordovi.github.io/quicksign/" />
+  <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5774812049482713" crossorigin="anonymous"></script>
+  <meta property="og:title" content="QuickSign — Sign PDF Online Free (No Upload)" />
+  <meta property="og:description" content="Draw your signature and sign any PDF in your browser. Your documents are never uploaded to a server." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://dcordovi.github.io/quicksign/" />
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "QuickSign",
+    "url": "https://dcordovi.github.io/quicksign/",
+    "applicationCategory": "BusinessApplication",
+    "operatingSystem": "Any",
+    "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+    "description": "Free online PDF signing tool. Draw your signature and place it on any page — files are processed in the browser and never uploaded."
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "Is my document uploaded when I sign it?",
+        "acceptedAnswer": { "@type": "Answer", "text": "No. QuickSign runs entirely in your browser. The PDF is opened and signed on your own device and never touches a server." }
+      },
+      {
+        "@type": "Question",
+        "name": "How do I sign a PDF for free?",
+        "acceptedAnswer": { "@type": "Answer", "text": "Drop your PDF into QuickSign, draw your signature with your mouse or finger, drag it onto the page, and press Download. The signed PDF downloads instantly with no watermark." }
+      },
+      {
+        "@type": "Question",
+        "name": "Is a drawn signature legally valid?",
+        "acceptedAnswer": { "@type": "Answer", "text": "In many jurisdictions (e.g. under the US ESIGN Act and EU eIDAS regulation) simple electronic signatures are legally recognized for most everyday documents. For high-stakes contracts, check what level of signature the receiving party requires." }
+      }
+    ]
+  }
+  </script>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="site-header">
+    <div class="wrap header-row">
+      <a class="logo" href="./">Quick<span>Sign</span></a>
+      <nav>
+        <a href="#why">Why QuickSign</a>
+        <a href="#faq">FAQ</a>
+        <button id="premiumBtn" class="btn btn-ghost">✨ Premium</button>
+      </nav>
+    </div>
+  </header>
+
+  <section class="hero">
+    <div class="wrap">
+      <h1>Sign PDFs online — without uploading them</h1>
+      <p class="sub">Draw your signature, place it on the page, download the signed PDF. No upload, no signup, no watermarks — your contracts never leave your device.</p>
+    </div>
+  </section>
+
+  <main class="wrap app-grid">
+    <section class="panel work-col">
+      <div id="dropzone" class="dropzone">
+        <div class="dz-inner">
+          <div class="dz-icon">✍️</div>
+          <p><strong>Drop a PDF here</strong> or</p>
+          <button id="chooseBtn" class="btn btn-primary">Choose a PDF to sign</button>
+          <p class="dz-hint">Processed on your device — never uploaded</p>
+        </div>
+        <input type="file" id="fileInput" accept="application/pdf,.pdf" hidden />
+      </div>
+
+      <div id="editor" class="editor" hidden>
+        <div class="toolbar">
+          <button id="addSigBtn" class="btn btn-primary">✍️ Add signature</button>
+          <button id="addDateBtn" class="btn btn-soft">📅 Date</button>
+          <button id="addTextBtn" class="btn btn-soft">🔤 Text <span class="lock" id="textLock">🔒</span></button>
+          <button id="addInitialsBtn" class="btn btn-soft">🅰 Initials <span class="lock" id="initialsLock">🔒</span></button>
+          <span class="toolbar-spacer"></span>
+          <div class="pagenav">
+            <button id="prevPageBtn" class="icon-btn" title="Previous page">‹</button>
+            <span id="pageIndicator">1 / 1</span>
+            <button id="nextPageBtn" class="icon-btn" title="Next page">›</button>
+          </div>
+        </div>
+        <div id="savedRow" class="saved-row" hidden></div>
+        <div class="viewer-outer">
+          <div id="viewer" class="viewer">
+            <canvas id="pageCanvas"></canvas>
+            <div id="overlay" class="overlay"></div>
+          </div>
+        </div>
+        <p class="editor-hint">Drag items to move them · drag the corner handle to resize · click ✕ to remove</p>
+        <div class="editor-actions">
+          <button id="downloadBtn" class="btn btn-primary btn-lg">⬇️ Download signed PDF</button>
+          <button id="resetBtn" class="btn btn-ghost">Start over</button>
+        </div>
+      </div>
+
+      <div id="toast" class="toast" hidden></div>
+      <div id="adSlotContent" class="ad-slot" hidden></div>
+    </section>
+  </main>
+
+  <!-- Signature modal -->
+  <div id="sigModal" class="modal-backdrop" hidden>
+    <div class="modal sig-modal">
+      <h2 id="sigModalTitle">Add your signature</h2>
+      <div class="sig-tabs">
+        <button id="tabDraw" class="sig-tab active">Draw</button>
+        <button id="tabType" class="sig-tab">Type <span class="lock" id="typeLock">🔒</span></button>
+        <button id="tabUpload" class="sig-tab">Photo <span class="lock" id="uploadLock">🔒</span></button>
+      </div>
+      <div id="paneDraw" class="sig-pane">
+        <canvas id="drawCanvas" width="920" height="320"></canvas>
+        <div class="pane-row">
+          <button id="clearDrawBtn" class="btn btn-ghost">Clear</button>
+          <span class="pane-hint">Draw with your mouse, trackpad or finger</span>
+        </div>
+      </div>
+      <div id="paneType" class="sig-pane" hidden>
+        <input type="text" id="typeInput" placeholder="Type your name" maxlength="60" />
+        <canvas id="typeCanvas" width="920" height="240"></canvas>
+      </div>
+      <div id="paneUpload" class="sig-pane" hidden>
+        <input type="file" id="sigImgInput" accept="image/*" />
+        <p class="pane-hint">Upload a photo of your signature on white paper — the background is removed automatically.</p>
+        <canvas id="uploadCanvas" width="920" height="240"></canvas>
+      </div>
+      <label class="save-check"><input type="checkbox" id="saveSigCheck" /> Save for reuse on this device <span class="lock" id="saveLock">🔒</span></label>
+      <div class="modal-actions">
+        <button id="sigCancelBtn" class="btn btn-ghost">Cancel</button>
+        <button id="sigUseBtn" class="btn btn-primary">Use signature</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Text modal -->
+  <div id="textModal" class="modal-backdrop" hidden>
+    <div class="modal">
+      <h2>Add text</h2>
+      <input type="text" id="textInput" placeholder="e.g. John Smith, Director" maxlength="120" />
+      <div class="modal-actions">
+        <button id="textCancelBtn" class="btn btn-ghost">Cancel</button>
+        <button id="textOkBtn" class="btn btn-primary">Add text</button>
+      </div>
+    </div>
+  </div>
+
+  <section class="wrap seo" id="why">
+    <h2>Sign documents without handing them to a stranger's server</h2>
+    <div class="seo-grid">
+      <div class="seo-card"><h3>🔒 Nothing is uploaded</h3><p>Every popular e-sign site processes your files on their servers — leases, NDAs, medical forms, all uploaded. QuickSign does everything in your browser, so your documents never leave your device.</p></div>
+      <div class="seo-card"><h3>💳 No subscription</h3><p>DocuSign starts at around $10 every month. QuickSign's core signing is free forever, and Premium is a one-time $9 — not another recurring bill.</p></div>
+      <div class="seo-card"><h3>🚫 No watermarks</h3><p>Your signed PDF comes out clean. No branding, no "signed with free plan" stamp, no page limits.</p></div>
+      <div class="seo-card"><h3>⚡ Instant</h3><p>No upload and no processing queue. Open, sign, download — usually under a minute end to end.</p></div>
+      <div class="seo-card"><h3>🧩 Lossless</h3><p>Your signature is embedded directly into the original PDF. Text stays selectable and the file quality is untouched.</p></div>
+      <div class="seo-card"><h3>📱 Works everywhere</h3><p>Desktop, tablet or phone — draw your signature with a mouse, trackpad or finger.</p></div>
+    </div>
+  </section>
+
+  <section class="wrap seo">
+    <h2>Common tasks</h2>
+    <div class="seo-grid">
+      <div class="seo-card"><h3>Sign a lease or contract</h3><p>Drop the PDF in, draw your signature once, place it on the signature line, add the date, download. Done.</p></div>
+      <div class="seo-card"><h3>Initial every page</h3><p>Add your initials and stamp them on every page of an agreement in one click (Premium).</p></div>
+      <div class="seo-card"><h3>Fill in your name and title</h3><p>Add text fields anywhere — name, job title, company — in a clean font that matches the document (Premium).</p></div>
+      <div class="seo-card"><h3>Reuse your real signature</h3><p>Photograph your pen-on-paper signature once; QuickSign removes the background and saves it for every future document (Premium).</p></div>
+    </div>
+  </section>
+
+  <section class="wrap seo" id="faq">
+    <h2>Frequently asked questions</h2>
+    <details><summary>Is my document uploaded anywhere?</summary><p>No. Everything happens in your browser — you can even disconnect from the internet after the page loads and it keeps working. Your files never touch a server.</p></details>
+    <details><summary>Is a drawn signature legally valid?</summary><p>In many jurisdictions — including under the US ESIGN Act and the EU eIDAS regulation — simple electronic signatures are legally recognized for most everyday documents like leases, freelance contracts and internal forms. For high-stakes or notarized documents, check what signature level the receiving party requires.</p></details>
+    <details><summary>How do I sign a PDF for free?</summary><p>Drop your PDF into the box above, click "Add signature", draw it with your mouse or finger, drag it onto the signature line and press Download. No account needed.</p></details>
+    <details><summary>Will there be a watermark on my signed PDF?</summary><p>No watermarks and no quality loss — the signed file is your original PDF with just your signature embedded.</p></details>
+    <details><summary>Can I sign a password-protected PDF?</summary><p>Encrypted PDFs can't be processed — remove the password first using the tool that created the document, then drop the unlocked file here.</p></details>
+    <details><summary>Can I save my signature for next time?</summary><p>Yes — Premium lets you save drawn, typed or photographed signatures on your device so future documents take seconds. The signature itself is stored only in your own browser.</p></details>
+  </section>
+
+  <!-- Premium modal -->
+  <div id="premiumModal" class="modal-backdrop" hidden>
+    <div class="modal">
+      <h2>QuickSign Premium</h2>
+      <p class="modal-sub">One-time purchase. No subscription.</p>
+      <ul class="perks">
+        <li>💾 Save signatures &amp; initials for reuse</li>
+        <li>🔤 Add text fields — names, titles, dates anywhere</li>
+        <li>🅰 Initials, including "apply to every page"</li>
+        <li>📷 Turn a photo of your pen signature into a clean stamp</li>
+        <li>✒️ Typed signatures in an elegant script font</li>
+        <li>🚀 Supports all current and future tools, forever</li>
+      </ul>
+      <button id="buyBtn" class="btn btn-primary btn-lg">Get Premium — $9</button>
+      <p class="license-toggle"><a href="#" id="haveKeyLink">Already purchased? Enter license key</a></p>
+      <div id="licenseRow" class="license-row" hidden>
+        <input type="text" id="licenseInput" placeholder="Paste your license key" />
+        <button id="licenseVerifyBtn" class="btn btn-soft">Activate</button>
+      </div>
+      <p id="licenseStatus" class="license-status"></p>
+      <button id="premiumCloseBtn" class="modal-close" aria-label="Close">✕</button>
+    </div>
+  </div>
+
+  <footer class="site-footer">
+    <div class="wrap">
+      <p>QuickSign — free online PDF signing. More free tools: <a href="https://dcordovi.github.io/quickpdf/">PDF merger &amp; splitter</a> · <a href="https://dcordovi.github.io/quickimage/">image compressor</a> · <a href="https://dcordovi.github.io/quickqr/">QR code generator</a> · <a href="https://dcordovi.github.io/quickinvoice/">invoice generator</a> · <a href="https://dcordovi.github.io/quickcv/">resume builder</a></p>
+      <p>© 2026 QuickSign. Your documents stay on your device.</p>
+    </div>
+  </footer>
+
+  <script src="pdf-lib.min.js"></script>
+  <script src="pdf.min.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
